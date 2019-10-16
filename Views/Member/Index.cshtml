@@ -1,0 +1,143 @@
+@model IEnumerable<mvcMembers.Models.Member>
+<!-- @{
+    ViewData["Title"] = "Index";
+} -->
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width"/>
+    <title>Index</title>
+</head>
+<body>
+
+    <h2>Members</h2>
+
+    <a style="margin-bottom: 10px; background-color: green; width: 150px; border-radius: 5px; color: white !important; " class="nav-link text-dark" asp-area="" asp-controller="Member" asp-action="Create">Member Create</a>
+
+    <form method="POST">
+        <table>
+            <tr>
+                <th><input style="width: 300px; margin-bottom: 10px;border-radius: 5px;border: 0.5px solid #999999;padding: 5px;" type="text" name="SureName" placeholder="Pls enter Surename" /></th>
+                <th><input style="width: 300px; margin-bottom: 10px;border-radius: 5px;border: 0.5px solid #999999;padding: 5px;" type="text" name="Email" placeholder="Pls enter Email" /></th>
+                <th><input style="margin-bottom: 11px;background-color: green;width: 150px;border-radius: 5px;color: white !important;border: none;height: 35px;" type="submit" value="Search" /></th>
+            </tr>
+        </table>
+    </form>
+
+    <table class="table" id="tblMembers">
+        <tr>
+            <th>Id</th>
+            <th>FirstName</th>
+            <th>SureName</th>
+            <th>Email</th>
+            <th></th>
+        </tr>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td class="Id">
+                    <span>@Html.DisplayTextFor(modelItem => item.Id)</span>
+                </td>
+                <td class="FirstName">
+                    <span>@Html.DisplayTextFor(modelItem => item.FirstName)</span>
+                    <input type="text" value="@Html.DisplayTextFor(modelItem => item.FirstName)" style="display:none"/>
+                </td>
+                <td class="SureName">
+                    <span>@Html.DisplayTextFor(modelItem => item.SureName)</span>
+                    <input type="text" value="@Html.DisplayTextFor(modelItem => item.SureName)" style="display:none"/>
+                </td>
+                <td class="Email">
+                    <span>@Html.DisplayTextFor(modelItem => item.Email)</span>
+                    <input type="text" value="@Html.DisplayTextFor(modelItem => item.Email)" style="display:none"/>
+                </td>
+                <td>
+                    <a class="Edit" href="javascript:;">Edit</a>
+                    <a class="Update" href="javascript:;" style="display:none">Update</a>
+                    <a class="Cancel" href="javascript:;" style="display:none">Cancel</a>
+                    <!-- <a class="Delete" href="javascript:;">Delete</a> -->
+                </td>
+            </tr>
+        }
+    </table>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/json2/20160511/json2.min.js"></script>
+
+    <script type="text/javascript">
+        $(function () {
+            //Remove the dummy row if data present.
+            if ($("#tblMembers tr").length > 2) {
+                $("#tblMembers tr:eq(1)").remove();
+            } else {
+                var row = $("#tblMembers tr:last-child");
+                row.find(".Edit").hide();
+                row.find("span").html('&nbsp;');
+            }
+        });
+ 
+        //Edit event handler.
+        $("body").on("click", "#tblMembers .Edit", function () {
+            var row = $(this).closest("tr");
+            $("td", row).each(function () {
+                if ($(this).find("input").length > 0) {
+                    $(this).find("input").show();
+                    $(this).find("span").hide();
+                }
+            });
+            row.find(".Update").show();
+            row.find(".Cancel").show();
+            $(this).hide();
+        });
+
+        //Update event handler.
+        $("body").on("click", "#tblMembers .Update", function () {
+            var row = $(this).closest("tr");
+            $("td", row).each(function () {
+                if ($(this).find("input").length > 0) {
+                    var span = $(this).find("span");
+                    var input = $(this).find("input");
+                    span.html(input.val());
+                    span.show();
+                    input.hide();
+                }
+            });
+            row.find(".Edit").show();
+            row.find(".Delete").show();
+            row.find(".Cancel").hide();
+            $(this).hide();
+ 
+            var member = {};
+            member.Id = row.find(".Id").find("span").html();
+            member.FirstName = row.find(".FirstName").find("span").html();
+            member.SureName = row.find(".SureName").find("span").html();
+            member.Email = row.find(".Email").find("span").html();
+            $.ajax({
+                type: "POST",
+                url: "/Member/UpdateMember",
+                data: '{member:' + JSON.stringify(member) + '}',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json"
+            });
+        });
+
+        //Cancel event handler.
+        $("body").on("click", "#tblMembers .Cancel", function () {
+            var row = $(this).closest("tr");
+            $("td", row).each(function () {
+                if ($(this).find("input").length > 0) {
+                    var span = $(this).find("span");
+                    var input = $(this).find("input");
+                    input.val(span.html());
+                    span.show();
+                    input.hide();
+                }
+            });
+            row.find(".Edit").show();
+            row.find(".Update").hide();
+            $(this).hide();
+        });
+ 
+        
+    </script>
+</body>
+</html>

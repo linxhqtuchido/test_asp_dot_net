@@ -1,0 +1,37 @@
+@model IEnumerable<mvcMembers.Models.Member>
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h2>Member Create</h2>
+
+@{
+    string text = (string)TempData["FlashMessage.Text"];
+}
+@if (!string.IsNullOrWhiteSpace(text))
+{
+    <div>
+        <p>
+            @text
+        </p>
+    </div>
+}
+
+<form method="POST">
+
+    <table>
+        <tr>
+            <th>Firstname <span style="color: red;">(*)</span></th>
+            <th>SureName <span style="color: red;">(*)</span></th>
+            <th>Email <span style="color: red;">(*)</span></th>
+        </tr>
+
+        <tr>
+            <th><input style="border-radius: 5px;border: 0.5px solid #999999;padding: 5px;" type="text" name="Firstname" placeholder="Pls enter Firstname" /></th>
+            <th><input style="border-radius: 5px;border: 0.5px solid #999999;padding: 5px;" type="text" name="SureName" placeholder="Pls enter SureName" /></th>
+            <th><input style="border-radius: 5px;border: 0.5px solid #999999;padding: 5px;" type="text" name="Email" placeholder="Pls enter Email" /></th>
+        </tr>
+    </table>
+    <br />
+    <input style="margin-bottom: 11px;background-color: green;width: 150px;border-radius: 5px;color: white !important;border: none;height: 35px;" type="submit" value="Send"/>
+</form>
